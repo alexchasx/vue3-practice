@@ -47,9 +47,14 @@
             />
           </div>
 
-          <div class="mb-3 form-group" v-for=",i in guests">
+          <div class="mb-3 form-group" v-for="guest,i in guests">
             <label @dblclick="removeGuest(i)">Guest {{ i + 1 }}</label>
-            <input type="text" v-model.trim="guests[i]" class="form-control" />
+            <input
+              type="text"
+              v-model.trim="guests.value"
+              class="form-control"
+              ref="guest"
+            />
           </div>
 
           <hr />
@@ -119,6 +124,11 @@
         methods: {
           addGuest() {
             this.guests.push('');
+
+            this.$nextTick(() => {
+              const guest = this.$refs.guests;
+              guests[guests.length - 1].focus;
+            });
           },
           removeGuest(i) {
             this.guests.splice(i, 1);
