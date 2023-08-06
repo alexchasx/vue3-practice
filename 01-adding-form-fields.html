@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="css/bootstrap.mini.css" />
     <link rel="stylesheet" href="css/style.css" />
     <script src="js/vue.js"></script>
-    <title>Document</title>
+    <title>01-adding-form-fields</title>
   </head>
   <body>
     <div class="wwrapper">
@@ -51,7 +51,7 @@
             <label @dblclick="removeGuest(i)">Guest {{ i + 1 }}</label>
             <input
               type="text"
-              v-model.trim="guests.value"
+              v-model.trim="guest.value"
               class="form-control"
               ref="guest"
             />

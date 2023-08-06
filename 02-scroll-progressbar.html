@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.mini.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .wrapper {
+        max-width: 600px;
+      }
+
+      .content {
+        height: 200px;
+        overflow: auto;
+      }
+    </style>
+    <script src="js/vue.js"></script>
+    <title>02-scroll-progressbar</title>
+  </head>
+  <body>
+    <div class="wrapper p-3">
+      <div class="sample">
+        <form v-if="!formDone" @submit.prevent="sendForm">
+          <div class="content alert alert-info" @scroll="onScroll">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit
+              laudantium eveniet at dolore possimus cumque magnam sapiente
+              veniam pariatur iusto obcaecati a excepturi optio voluptatem
+              nostrum aspernatur minima, quisquam illum!
+            </p>
+          </div>
+
+          <div class="progress">
+            <div class="progress-bar" :style="progressStyles"></div>
+          </div>
+
+          <template v-if="scrollDone">
+            <div class="form-check">
+              <label class="form-check-label">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  v-model="flags.agree"
+                />
+                Agree All
+              </label>
+            </div>
+
+            <div class="form-check">
+              <label class="form-check-label">
+                <input
+                  type="checkbox"
+                  class="form-check-input"
+                  v-model="flags.getSpam"
+                />
+                Get Spam
+              </label>
+            </div>
+
+            <template v-if="flags.getSpam">
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    v-model="spamType"
+                    value="email"
+                  />
+                  Email
+                </label>
+              </div>
+
+              <div class="form-check">
+                <label class="form-check-label">
+                  <input
+                    type="radio"
+                    class="form-check-input"
+                    v-model="spamType"
+                    value="phone"
+                  />
+                  Phone
+                </label>
+              </div>
+            </template>
+
+            <hr />
+
+            <button class="btn btn-primary">Send Data</button>
+          </template>
+        </form>
+
+        <div v-else>
+          <table class="table table-bordered mt-4">
+            <tr>
+              <td>Agree All</td>
+              <td>
+                <app-bool-to-text :value="flags.agree" />
+              </td>
+            </tr>
+
+            <tr>
+              <td>Get Spam</td>
+              <td>
+                <app-bool-to-text :value="flags.getSpam" />
+              </td>
+            </tr>
+
+            <tr v-if="flags.getSpam">
+              <td>Spam type</td>
+              <td>{{ spamType }}</td>
+            </tr>
+          </table>
+
+          <app-bool-to-text
+            :value="true"
+            trueclass="text-primary"
+            truetext="Да"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const AppBoolToText = {
+        props: {
+          value: {
+            type: Boolean,
+            required: true,
+          },
+          trueclass: {
+            type: String,
+            default: 'text-success',
+          },
+          falseclass: {
+            type: String,
+            default: 'text-danger',
+          },
+          truetext: {
+            type: String,
+            default: 'Yes',
+          },
+          falsetext: {
+            type: String,
+            default: 'No',
+          },
+        },
+
+        computed: {
+          classes() {
+            return this.value ? this.trueclass : this.falseclass;
+          },
+          text() {
+            return this.value ? this.truetext : this.falsetext;
+          },
+        },
+
+        template: `<span :class="classes">{{ text }}</span>`,
+      };
+
+      Vue.createApp({
+        components: {
+          AppBoolToText,
+        },
+        data: () => ({
+          scrollValue: 0,
+          flags: {
+            agree: false,
+            getSpam: false,
+          },
+          spamType: 'email',
+          formDone: false,
+        }),
+
+        computed: {
+          progressStyles() {
+            return {
+              width: this.scrollValue * 100 + '%',
+            };
+          },
+
+          scrollDone() {
+            return this.scrollValue > 0.99;
+          },
+
+          formReady() {
+            return this.scrollDone && this.flags.agree;
+          },
+        },
+
+        methods: {
+          onScroll(e) {
+            const el = e.target;
+            this.scrollValue = Math.max(
+              this.scrollValue,
+              el.scrollTop / (el.scrollHeight - el.clientHeight)
+            );
+          },
+          sendForm() {
+            if (this.formReady) {
+              this.formDone = true;
+            }
+          },
+        },
+      }).mount('.sample');
+    </script>
+  </body>
+</html>
