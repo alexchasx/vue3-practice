@@ -47,11 +47,9 @@
           rel() {
             return this.value / this.max;
           },
-
           progressStyles() {
             return { width: this.rel * 100 + '%' };
           },
-
           alertClasses() {
             return {
               'alert-danger': this.rel < 0.25,

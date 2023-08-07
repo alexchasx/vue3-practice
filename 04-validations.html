@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.mini.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      .wrapper {
+        max-width: 600px;
+      }
+
+      .content {
+        height: 200px;
+        overflow: auto;
+      }
+    </style>
+    <script src="js/vue.js"></script>
+    <title>04</title>
+  </head>
+  <body>
+    <div class="wrapper p-3">
+      <div class="sample">
+        <form>
+          <div class="progress">
+            <div class="progress-bar" :style="progressStyles"></div>
+          </div>
+
+          <div>
+            <app-field
+              v-for="field,i in info"
+              :key="i"
+              :value="field.value"
+              :label="field.label"
+              :valid="field.valid"
+              @input="onUpdate(i, $event)"
+            ></app-field>
+          </div>
+
+          <button class="btn btn-primary">Send Data</button>
+        </form>
+
+        <!-- <pre>
+          {{ fieldDone }}
+        </pre> -->
+
+        <div>
+          <table class="table table-bordered">
+            <tr>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const AppField = {
+        props: {
+          label: { type: String, required: true },
+          value: { type: String, required: true },
+          valid: { type: Boolean, required: true },
+        },
+
+        emit: {
+          input: null,
+        },
+
+        data() {
+          return {
+            activated: this.value != '',
+          };
+        },
+
+        methods: {
+          onInput(e) {
+            this.activated = true;
+            this.$emit('updated', e.target.value);
+          },
+        },
+
+        template: `
+            <div class="form-group">
+              <label :class="valid ? 
+                    'text-success' : 'text-danger'">
+                {{ label }}
+                <span
+                  v-if="activated"
+                  :class="valid ? 
+                    'fa fa-check-circle text-success' : 'fa fa-exclamation'"
+                ></span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                :value="value"
+                @input="onInput"
+              />
+            </div>`,
+      };
+
+      const AppRoot = {
+        components: {
+          AppField,
+        },
+
+        data: () => ({
+          info: [
+            {
+              label: 'Name',
+              value: '',
+              pattern: /^[a-zA-Z ]{2,30}$/,
+            },
+            {
+              label: 'Phone',
+              value: '',
+              pattern: /^[0-9]{7,14}$/,
+            },
+            {
+              label: 'Email',
+              value: '',
+              pattern: /.+/,
+            },
+          ],
+        }),
+
+        computed: {
+          formReady() {
+            return this.fieldDone >= this.info.length;
+          },
+          progressStyles() {
+            const rel = this.fieldDone / this.info.length;
+            return { width: rel * 100 + '%' };
+          },
+          fieldDone() {
+            return this.info.filter((field) => field.valid).length;
+          },
+        },
+
+        methods: {
+          onUpdate(i, val) {
+            const field = this.info[i];
+            field.value = val.target.value.trim();
+            field.valid = field.pattern.test(field.value);
+          },
+        },
+
+        created() {
+          this.info.forEach((field) => {
+            field.valid = false;
+          });
+        },
+      };
+
+      Vue.createApp(AppRoot).mount('.sample');
+    </script>
+  </body>
+</html>
