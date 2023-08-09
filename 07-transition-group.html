@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.mini.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/vue.js"></script>
+    <title>01-adding-form-fields</title>
+  </head>
+
+  <style>
+    .sample {
+      overflow-x: hidden;
+    }
+
+    .fade-enter-active {
+      animation: fadeIn 0.5s;
+    }
+
+    .fade-leave-active {
+      animation: fadeOut 0.5s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+    }
+  </style>
+
+  <body>
+    <div class="wwrapper">
+      <div class="sample">
+        <form class="p-3" v-if="!formDone" @submit.prevent="sendForm">
+          <div class="mb-3 form-group">
+            <label for="email" class="form-label">Email address</label>
+            <input
+              type="text"
+              v-model.trim="user.email"
+              class="form-control"
+              id="email"
+              name="email"
+              ref="firstInput"
+            />
+          </div>
+
+          <div class="mb-3 form-group">
+            <label for="exampleFormControlInput1" class="form-label"
+              >Phone</label
+            >
+            <input
+              type="text"
+              v-model="user.phone"
+              class="form-control"
+              id="phone"
+              name="phone"
+            />
+          </div>
+
+          <div class="mb-3 form-group">
+            <label>Guests</label>
+            <input
+              type="button"
+              class="btn btn-primary"
+              @click="addGuest"
+              value="+"
+            />
+          </div>
+
+          <transition-group name="fade">
+            <div
+              class="mb-3 form-group"
+              v-for="guest,i in guests"
+              :key="guest.id"
+            >
+              <label @dblclick="removeGuest(i)">Guest {{ guest.id }}</label>
+              <input
+                type="text"
+                v-model.trim="guest.value"
+                class="form-control"
+                ref="guest"
+              />
+            </div>
+          </transition-group>
+
+          <hr />
+
+          <div class="mb-3 form-group">
+            <button
+              type="submit"
+              class="btn btn-success"
+              :disabled="!formReady"
+            >
+              Send Data
+            </button>
+          </div>
+        </form>
+
+        <div v-else>
+          <h2>All done!</h2>
+          <table class="table table-bordered">
+            <tr>
+              <td>Email</td>
+              <td>{{ user.email }}</td>
+            </tr>
+
+            <tr>
+              <td>Phone</td>
+              <td>{{ user.phone }}</td>
+            </tr>
+
+            <tr>
+              <td>Guests</td>
+              <td>
+                <ul class="list-group">
+                  <li class="list-group-item" v-for="guest in guests">
+                    {{ guest }}
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            user: {
+              email: '',
+              phone: '',
+            },
+            guests: [],
+            guestsAI: 0,
+            formDone: false,
+          };
+        },
+
+        computed: {
+          formReady() {
+            return Object.values(this.user).every((val) => val.length > 0);
+          },
+        },
+
+        mounted() {
+          this.$refs.firstInput.focus();
+        },
+
+        methods: {
+          addGuest() {
+            this.guests.push({ id: ++this.guestsAI, value: '' });
+          },
+          removeGuest(i) {
+            this.guests.splice(i, 1);
+          },
+          sendForm(event) {
+            if (this.formReady) {
+              this.formDone = true;
+              this.guests = this.guests.filter((g) => g.length > 0);
+            }
+          },
+        },
+      }).mount('.sample');
+    </script>
+  </body>
+</html>
