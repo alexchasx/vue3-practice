@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/bootstrap.mini.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/vue.js"></script>
+    <title>06-transition</title>
+  </head>
+
+  <style>
+    .sample {
+      overflow-x: hidden;
+    }
+
+    /* Option 1 */
+
+    /* .fade-enter-from {
+      opacity: 0;
+    }
+
+    .fade-enter-active {
+      transition: opacity 0.5s;
+    }
+
+    .fade-enter-to {
+      opacity: 1;
+    }
+
+    .fade-leave-from {
+      opacity: 1;
+    }
+
+    .fade-leave-active {
+      transition: opacity 0.5s;
+    }
+
+    .fade-leave-to {
+      opacity: 0;
+    } */
+
+    /* Option 2 */
+
+    /* .fade-enter-from {
+      opacity: 0;
+    }
+
+    .fade-enter-active {
+      transition: opacity 0.5s;
+    }
+
+    .fade-leave-active {
+      transition: opacity 0.5s;
+      opacity: 0;
+    } */
+
+    /* Option 3 */
+
+    .fade-enter-active {
+      animation: fadeIn 0.5s;
+    }
+
+    .fade-leave-active {
+      animation: fadeOut 0.5s;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(-100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+    }
+  </style>
+
+  <body>
+    <div class="wrapper p-3">
+      <div class="sample">
+        <button class="btn btn-primary" @click="toggleAlert">
+          Toggle alert
+        </button>
+
+        <hr />
+
+        <transition name="fade" mode="out-in">
+          <div class="alert alert-success" v-if="isShowAlert">
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, quia
+              eaque ipsam reprehenderit incidunt rerum illo similique itaque
+              sapiente assumenda voluptates tempora fuga quasi consequuntur
+              minima quo aspernatur ratione molestiae.
+            </p>
+          </div>
+
+          <div class="alert alert-danger" v-else>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, quia
+              eaque ipsam reprehenderit incidunt rerum illo similique itaque
+              sapiente assumenda voluptates tempora fuga quasi consequuntur
+              minima quo aspernatur ratione molestiae.
+            </p>
+          </div>
+        </transition>
+      </div>
+    </div>
+
+    <script>
+      const AppRoot = {
+        data: () => ({
+          isShowAlert: false,
+        }),
+
+        methods: {
+          toggleAlert() {
+            this.isShowAlert = !this.isShowAlert;
+          },
+        },
+      };
+
+      Vue.createApp(AppRoot).mount('.sample');
+    </script>
+  </body>
+</html>
