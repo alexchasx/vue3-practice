@@ -26,7 +26,7 @@ export default {
     },
     setCnt(state, { id, cnt }) {
       const item = state.items.find((item) => item.id == id);
-      item.cnt = Math.max(cnt, 1);
+      item.cnt = cnt;
     },
   },
 
@@ -43,7 +43,9 @@ export default {
     },
     setCnt({ commit, getters }, { id, cnt }) {
       if (getters.inCart(id)) {
-        commit('setCnt', { id, cnt });
+        const item = getters.itemsDetailed.find((item) => item.id == id);
+        const validCnt = Math.min(Math.max(cnt, 1), item.rest);
+        commit('setCnt', { id, cnt: validCnt });
       }
     },
   },
