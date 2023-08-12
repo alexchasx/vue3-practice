@@ -1,4 +1,6 @@
 <script>
+// import { mapGetters } from 'vuex';
+
 export default {
   data() {
     return {
@@ -23,7 +25,8 @@ export default {
 
           <div class="col col-sm-3">
             <div class="alert alert-default">
-              <div>In Cart {{ $store.getters['cart/length'] }}</div>
+              <div>In Cart: {{ $store.getters['cart/length'] }}</div>
+              <div>Total: {{ $store.getters['cart/total'] }}</div>
             </div>
           </div>
         </div>

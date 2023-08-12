@@ -1,18 +1,26 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import AppE404 from './AppE404.vue';
 
 export default {
-  // data() {
-  //   return {
-  //     title: '',
-  //     price: null,
-  //     rest: null,
-  //   };
-  // },
-
+  components: {
+    AppE404,
+  },
   computed: {
-    ...mapGetters('products', ['product', 'inCart']),
+    ...mapGetters('products', { productById: 'one' }),
     ...mapGetters('cart', ['inCart']),
+    id() {
+      return parseInt(this.$route.params.id);
+    },
+    validId() {
+      return /^[1-9]+\d*$/.test();
+    },
+    product() {
+      return this.productById(this.id);
+    },
+    hasProduct() {
+      return this.product !== undefined;
+    },
   },
 
   methods: {
@@ -22,13 +30,12 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1>{{ product($route.params.id).title }}</h1>
+  <div v-if="hasProduct">
+    <h1>{{ product.title }}</h1>
 
     <hr />
 
-    <div>Price: {{ product($route.params.id).price }}</div>
-    <div>Rest: {{ product($route.params.id).rest }}</div>
+    <div>Price: {{ product.price }}</div>
 
     <hr />
 
@@ -50,4 +57,6 @@ export default {
       Add to cart
     </button>
   </div>
+
+  <app-e-404 v-else />
 </template>

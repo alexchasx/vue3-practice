@@ -6,7 +6,7 @@ export default {
 
   getters: {
     all: (state) => state.items,
-    product: (state) => (id) => state.items.find((item) => item.id == id),
+    one: (state) => (id) => state.items.find((item) => item.id == id),
   },
 
   mutations: {},

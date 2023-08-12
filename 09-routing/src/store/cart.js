@@ -7,7 +7,14 @@ export default {
   getters: {
     inCart: (state) => (id) => state.items.some((item) => item.id == id),
     length: (state) => state.items.length,
-    // total: (state, getter, rootState, rootGetters)
+    itemsDetailed: (state, getter, rootState, rootGetters) => {
+      return state.items.map((item) => {
+        const product = rootGetters['products/one'](item.id);
+        return { ...product, cnt: item.cnt };
+      });
+    },
+    total: (state, getters) =>
+      getters.itemsDetailed.reduce((t, i) => t + i.price * i.cnt, 0),
   },
 
   mutations: {
@@ -16,6 +23,10 @@ export default {
     },
     remove(state, id) {
       state.items = state.items.filter((item) => item.id != id);
+    },
+    setCnt(state, { id, cnt }) {
+      const item = state.items.find((item) => item.id == id);
+      item.cnt = Math.max(cnt, 1);
     },
   },
 
@@ -28,6 +39,11 @@ export default {
     remove({ commit, getters }, id) {
       if (getters.inCart(id)) {
         commit('remove', id);
+      }
+    },
+    setCnt({ commit, getters }, { id, cnt }) {
+      if (getters.inCart(id)) {
+        commit('setCnt', { id, cnt });
       }
     },
   },
