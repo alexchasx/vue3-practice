@@ -1,7 +1,10 @@
+const BASEURL = 'http://faceprog.ru/reactcourseapi/cart/';
+
 export default {
   namespaced: true,
   state: {
     items: [],
+    token: null,
   },
 
   getters: {
@@ -18,6 +21,10 @@ export default {
   },
 
   mutations: {
+    load(state, { cart, token }) {
+      state.items = cart;
+      state.token = token;
+    },
     add(state, id) {
       state.items.push({ id, cnt: 1 });
     },
@@ -31,16 +38,54 @@ export default {
   },
 
   actions: {
-    add({ commit, getters }, id) {
+    async load({ commit }) {
+      try {
+        const oldToken = localStorage.getItem('CART__TOKEN');
+        const response = await fetch(`${BASEURL}load.php?token=${oldToken}`);
+        const { cart, token, needUpdate } = await response.json();
+
+        if (needUpdate) {
+          localStorage.setItem('CART__TOKEN', token);
+        }
+
+        commit('load', { cart, token });
+      } catch (e) {
+        console.log('error', e);
+      }
+    },
+    async add({ commit, getters, state }, id) {
       if (!getters.inCart(id)) {
-        commit('add', id);
+        try {
+          const response = await fetch(
+            `${BASEURL}add.php?token=${state.token}&id=${id}`
+          );
+          const res = await response.json();
+
+          if (res) {
+            commit('add', id);
+          }
+        } catch (e) {
+          console.log('error', e);
+        }
       }
     },
-    remove({ commit, getters }, id) {
+    async remove({ commit, getters, state }, id) {
       if (getters.inCart(id)) {
-        commit('remove', id);
+        try {
+          const response = await fetch(
+            `${BASEURL}remove.php?token=${state.token}&id=${id}`
+          );
+          const res = await response.json();
+
+          if (res) {
+            commit('remove', id);
+          }
+        } catch (e) {
+          console.log('error', e);
+        }
       }
     },
+    // TODO: внедрить работу с API для этого метода
     setCnt({ commit, getters }, { id, cnt }) {
       if (getters.inCart(id)) {
         const item = getters.itemsDetailed.find((item) => item.id == id);
